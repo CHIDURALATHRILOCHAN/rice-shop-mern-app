@@ -1,0 +1,179 @@
+.reports-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    background-color: #f9f9f9;
+}
+
+.reports-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 2.2em;
+}
+
+.message {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* New controls section for buttons */
+.report-controls {
+    text-align: right;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Styles for clear-data-button are in App.css */
+.clear-reports-button {
+    margin-top: 0;
+}
+
+.report-filter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.report-filter label {
+    font-weight: bold;
+    color: #555;
+}
+
+.report-filter input[type="date"] {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.report-section {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.report-section h3 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #007bff;
+    font-size: 1.8em;
+}
+
+.report-section p {
+    text-align: center;
+    font-size: 1.1em;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.report-table th,
+.report-table td {
+    border: 1px solid #e0e0e0;
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.report-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #555;
+}
+
+.report-table tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
+
+.report-table tr:hover {
+    background-color: #eef;
+}
+
+/* Specific section headers */
+.today-sales-section h3 {
+    color: #28a745; /* Green for today's sales */
+}
+
+.max-profit-section h3 {
+    color: #ffc107; /* Yellow for max profit */
+}
+
+.max-profit-details {
+    text-align: center;
+    padding: 15px;
+    background-color: #fefefe;
+    border: 1px dashed #ffd700; /* Goldish border */
+    border-radius: 5px;
+    margin-top: 20px;
+}
+.max-profit-details h4 {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 1.4em;
+}
+.max-profit-details p {
+    margin-bottom: 5px;
+    font-size: 1.1em;
+}
+
+/* Styles for Chart Sections */
+.sales-trends-section, .product-performance-section {
+    /* Inherits general .report-section styles */
+}
+
+.chart-controls {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.chart-controls label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.chart-controls select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+
+.unauthorized-message {
+    text-align: center;
+    padding: 50px;
+    font-size: 1.5em;
+    color: #dc3545;
+    font-weight: bold;
+}

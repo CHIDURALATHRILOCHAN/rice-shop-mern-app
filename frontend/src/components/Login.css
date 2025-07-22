@@ -1,0 +1,115 @@
+/* General body styling for full-page background */
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: linear-gradient(135deg, #71b7e6, #9b59b6); /* Soft gradient background */
+    min-height: 100vh; /* Ensure it covers full viewport height */
+    display: flex; /* Use flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    overflow: auto; /* Allow scrolling if content is too large */
+}
+
+/* Adjusting App.css if it sets body styles */
+/* If App.css has conflicting body styles, you might need to comment them out or remove them.
+   For instance, if App.css has:
+   .App { text-align: center; }
+   You might move global font-family/background from .App to body here.
+*/
+
+.login-container {
+    width: 100%;
+    max-width: 420px; /* Slightly wider for better spacing */
+    padding: 40px;
+    border-radius: 12px; /* Softer rounded corners */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25); /* Deeper, softer shadow */
+    background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
+    text-align: center;
+    backdrop-filter: blur(5px); /* Frosted glass effect */
+    -webkit-backdrop-filter: blur(5px); /* Safari support */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
+}
+
+.login-container h2 {
+    margin-bottom: 30px; /* More space below heading */
+    color: #333;
+    font-size: 2.2em; /* Slightly larger heading */
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.form-group {
+    margin-bottom: 25px; /* More space between form groups */
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+    font-size: 0.95em;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 14px 15px; /* More padding */
+    border: 1px solid #c2c2c2; /* Softer border color */
+    border-radius: 8px; /* More rounded inputs */
+    font-size: 1.05em;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="password"]:focus {
+    border-color: #007bff; /* Highlight border on focus */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Subtle glowing effect */
+    outline: none; /* Remove default outline */
+}
+
+.login-button {
+    background-color: #007bff; /* Primary blue button */
+    color: white;
+    padding: 15px 25px;
+    margin-top: 25px; /* More space above button */
+    border: none;
+    border-radius: 8px; /* More rounded button */
+    cursor: pointer;
+    font-size: 1.2em; /* Larger text */
+    width: 100%;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3); /* Subtle button shadow */
+}
+
+.login-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4); /* Enhanced shadow on hover */
+}
+
+.message {
+    margin-top: 25px;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.95em;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}

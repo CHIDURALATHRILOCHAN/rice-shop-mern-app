@@ -1,0 +1,89 @@
+/* D:\rice-shop-app\frontend\src\App.css */
+
+/* Basic global resets and font size increase */
+html {
+    box-sizing: border-box;
+    font-size: 105%; /* Adjust this value to increase/decrease overall size. */
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #f0f2f5; /* Light grey background for non-login pages */
+    min-height: 100vh;
+}
+
+/* .App container - can be used for overall padding or centering */
+.App {
+    text-align: center;
+    padding: 20px;
+}
+
+/* Message styles - often used across components, good to have here */
+.message {
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.95em;
+    text-align: center;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Unauthorized message - specific style */
+.unauthorized-message {
+    text-align: center;
+    padding: 50px;
+    font-size: 1.5em;
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* NEW: Styles for clear data buttons */
+.clear-data-button {
+    background-color: #dc3545; /* Red for destructive actions */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 20px; /* Space above button */
+}
+
+.clear-data-button:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+}
+
+/* Specific spacing for buttons within sections */
+.clear-data-section {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px dashed #e0e0e0; /* Visual separator */
+}
