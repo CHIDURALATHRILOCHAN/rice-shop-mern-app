@@ -25,7 +25,7 @@ ChartJS.register(
     Legend
 );
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL; // Get backend URL
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Reports = () => {
     // State for Monthly Report
@@ -33,7 +33,7 @@ const Reports = () => {
     const [monthlyStartDate, setMonthlyStartDate] = useState('');
     const [monthlyEndDate, setMonthlyEndDate] = useState('');
 
-    // State for Today's Report (derived from monthly if date matches, or fetched separately)
+    // State for Today's Report
     const [todayReport, setTodayReport] = useState(null);
     const [todayDate, setTodayDate] = useState('');
 
@@ -43,10 +43,14 @@ const Reports = () => {
 
     // State for Sales Trends Chart
     const [salesTrendsData, setSalesTrendsData] = useState([]);
-    const [trendPeriod, setTrendPeriod] = useState('daily'); // 'daily' or 'monthly'
+    const [trendPeriod, setTrendPeriod] = useState('daily');
 
     // State for Product Performance Chart
     const [productPerformanceData, setProductPerformanceData] = useState([]);
+
+    // NEW: State for Product Profitability Summary
+    const [productProfitSummary, setProductProfitSummary] = useState([]);
+
 
     const [reportMessage, setReportMessage] = useState('');
     const [isError, setIsError] = useState(false);
@@ -57,8 +61,8 @@ const Reports = () => {
     // Initialize dates and check permission
     useEffect(() => {
         const today = new Date();
-        const todayStr = today.toISOString().split('T')[0]; // YYYY-MM-DD
-        setTodayDate(todayStr); // Set current date for Today's Sales
+        const todayStr = today.toISOString().split('T')[0];
+        setTodayDate(todayStr);
 
         const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
         const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
@@ -66,7 +70,7 @@ const Reports = () => {
         setMonthlyStartDate(firstDayOfMonth.toISOString().split('T')[0]);
         setMonthlyEndDate(lastDayOfMonth.toISOString().split('T')[0]);
 
-        setMaxProfitDate(todayStr); // Default max profit date to today
+        setMaxProfitDate(todayStr);
 
         if (userRole !== 'admin' && userRole !== 'manager') {
             setReportMessage("You don't have permission to view reports.");
@@ -79,8 +83,9 @@ const Reports = () => {
     useEffect(() => {
         if ((userRole === 'admin' || userRole === 'manager') && monthlyStartDate && monthlyEndDate) {
             fetchMonthlyReport();
-            fetchSalesTrends(); // Fetch trends for the same monthly range
-            fetchProductPerformance(); // Fetch product performance for the same monthly range
+            fetchSalesTrends();
+            fetchProductPerformance();
+            fetchProductProfitSummary(); // NEW: Fetch product profitability summary
         }
     }, [monthlyStartDate, monthlyEndDate, token, userRole]);
 
@@ -103,7 +108,7 @@ const Reports = () => {
         setReportMessage('');
         setIsError(false);
         try {
-            const response = await fetch(`${BACKEND_URL}/sales/report/daily-monthly?startDate=${monthlyStartDate}&endDate=${monthlyEndDate}`, { // Updated URL
+            const response = await fetch(`${BACKEND_URL}/sales/report/daily-monthly?startDate=${monthlyStartDate}&endDate=${monthlyEndDate}`, {
                 headers: { 'x-auth-token': token }
             });
             const data = await response.json();
@@ -145,7 +150,7 @@ const Reports = () => {
 
     const fetchMaxProfitProduct = async () => {
         try {
-            const response = await fetch(`${BACKEND_URL}/sales/report/max-profit-product?date=${maxProfitDate}`, { // Updated URL
+            const response = await fetch(`${BACKEND_URL}/sales/report/max-profit-product?date=${maxProfitDate}`, {
                 headers: { 'x-auth-token': token }
             });
             const data = await response.json();
@@ -167,7 +172,7 @@ const Reports = () => {
 
     const fetchSalesTrends = async () => {
         try {
-            const response = await fetch(`${BACKEND_URL}/sales/report/trends?period=${trendPeriod}&startDate=${monthlyStartDate}&endDate=${monthlyEndDate}`, { // Updated URL
+            const response = await fetch(`${BACKEND_URL}/sales/report/trends?period=${trendPeriod}&startDate=${monthlyStartDate}&endDate=${monthlyEndDate}`, {
                 headers: { 'x-auth-token': token }
             });
             const data = await response.json();
@@ -186,7 +191,7 @@ const Reports = () => {
 
     const fetchProductPerformance = async () => {
         try {
-            const response = await fetch(`${BACKEND_URL}/sales/report/by-product-type?startDate=${monthlyStartDate}&endDate=${monthlyEndDate}`, { // Updated URL
+            const response = await fetch(`${BACKEND_URL}/sales/report/by-product-type?startDate=${monthlyStartDate}&endDate=${monthlyEndDate}`, {
                 headers: { 'x-auth-token': token }
             });
             const data = await response.json();
@@ -199,6 +204,26 @@ const Reports = () => {
         } catch (err) {
             console.error('Error fetching product performance by type:', err);
             setReportMessage('Network error while fetching product performance by type.');
+            setIsError(true);
+        }
+    };
+
+    // NEW: Fetch Product Profitability Summary
+    const fetchProductProfitSummary = async () => {
+        try {
+            const response = await fetch(`${BACKEND_URL}/sales/report/product-profit-summary?startDate=${monthlyStartDate}&endDate=${monthlyEndDate}`, {
+                headers: { 'x-auth-token': token }
+            });
+            const data = await response.json();
+            if (response.ok) {
+                setProductProfitSummary(data);
+            } else {
+                setReportMessage(data.msg || 'Failed to fetch product profitability summary.');
+                setIsError(true);
+            }
+        } catch (err) {
+            console.error('Error fetching product profitability summary:', err);
+            setReportMessage('Network error while fetching product profitability summary.');
             setIsError(true);
         }
     };
@@ -282,7 +307,7 @@ const Reports = () => {
         setIsError(false);
 
         try {
-            const salesResponse = await fetch(`${BACKEND_URL}/sales/clear-all`, { // Updated URL
+            const salesResponse = await fetch(`${BACKEND_URL}/sales/clear-all`, {
                 method: 'DELETE',
                 headers: { 'x-auth-token': token }
             });
@@ -291,7 +316,7 @@ const Reports = () => {
                 throw new Error(salesData.msg || 'Failed to clear sales history.');
             }
 
-            const returnsResponse = await fetch(`${BACKEND_URL}/returns/clear-all`, { // Updated URL
+            const returnsResponse = await fetch(`${BACKEND_URL}/returns/clear-all`, {
                 method: 'DELETE',
                 headers: { 'x-auth-token': token }
             });
@@ -302,10 +327,12 @@ const Reports = () => {
 
             setReportMessage('All sales and returns history cleared successfully!');
             setIsError(false);
+            // Re-fetch all reports after clearing
             fetchMonthlyReport();
             fetchMaxProfitProduct();
             fetchSalesTrends();
             fetchProductPerformance();
+            fetchProductProfitSummary(); // NEW: Refresh product profitability
         } catch (err) {
             console.error('Error clearing report history:', err);
             setReportMessage(`Failed to clear report history: ${err.message || 'An unexpected error occurred.'}`);
@@ -441,6 +468,35 @@ const Reports = () => {
                             <Bar options={{ responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: 'Sales & Profit by Product Type' } } }} data={getProductPerformanceChartData()} />
                         ) : (
                             <p>No product performance data to display for the selected period.</p>
+                        )}
+                    </div>
+
+                    {/* NEW: Product Profitability Summary Section */}
+                    <div className="report-section product-profitability-section">
+                        <h3>Product Profitability Summary</h3>
+                        {productProfitSummary.length > 0 ? (
+                            <table className="report-table">
+                                <thead>
+                                    <tr>
+                                        <th>Product Name</th>
+                                        <th>Total Sales (₹)</th>
+                                        <th>Total Profit (₹)</th>
+                                        <th>Total Quantity Sold (kg)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {productProfitSummary.map(item => (
+                                        <tr key={item._id}>
+                                            <td>{item.productName}</td>
+                                            <td>{(item.totalSalesRevenue ?? 0).toFixed(2)}</td>
+                                            <td>{(item.totalProfitGenerated ?? 0).toFixed(2)}</td>
+                                            <td>{(item.totalQuantitySoldKg ?? 0).toFixed(2)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <p>No product profitability data to display for the selected period.</p>
                         )}
                     </div>
                 </>

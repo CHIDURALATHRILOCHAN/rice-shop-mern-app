@@ -169,6 +169,10 @@
     border: 1px solid #ddd;
 }
 
+/* NEW: Product Profitability Section styles */
+.product-profitability-section h3 {
+    color: #6f42c1; /* Purple for profitability */
+}
 
 .unauthorized-message {
     text-align: center;

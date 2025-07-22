@@ -184,7 +184,7 @@ router.route('/report/daily-monthly').get(auth(['admin', 'manager']), async (req
 
 // GET MAX PROFIT PRODUCT ON A SPECIFIC DAY: /sales/report/max-profit-product
 router.route('/report/max-profit-product').get(auth(['admin', 'manager']), async (req, res) => {
-    const { date } = req.query; // Expecting YYYY-MM-DD
+    const { date } = req.query;
 
     if (!date) {
         return res.status(400).json('Error: date query parameter is required.');
@@ -233,9 +233,9 @@ router.route('/report/max-profit-product').get(auth(['admin', 'manager']), async
 });
 
 
-// NEW ROUTE: GET SALES TRENDS (Daily/Monthly aggregated by total sales/profit)
+// GET SALES TRENDS (Daily/Monthly aggregated by total sales/profit)
 router.route('/report/trends').get(auth(['admin', 'manager']), async (req, res) => {
-    const { period = 'daily', startDate, endDate } = req.query; // period can be 'daily', 'monthly'
+    const { period = 'daily', startDate, endDate } = req.query;
 
     if (!startDate || !endDate) {
         return res.status(400).json('Error: startDate and endDate are required query parameters.');
@@ -248,9 +248,9 @@ router.route('/report/trends').get(auth(['admin', 'manager']), async (req, res) 
 
     let groupByFormat;
     if (period === 'monthly') {
-        groupByFormat = { $dateToString: { format: "%Y-%m", date: "$createdAt" } }; // Group by Year-Month
+        groupByFormat = { $dateToString: { format: "%Y-%m", date: "$createdAt" } };
     } else { // default to daily
-        groupByFormat = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }; // Group by Year-Month-Day
+        groupByFormat = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } };
     }
 
     try {
@@ -270,7 +270,7 @@ router.route('/report/trends').get(auth(['admin', 'manager']), async (req, res) 
                     totalProfit: { $sum: "$totalProfit" }
                 }
             },
-            { $sort: { "_id": 1 } } // Sort by date/month
+            { $sort: { "_id": 1 } }
         ]);
 
         res.json(trends);
@@ -281,7 +281,7 @@ router.route('/report/trends').get(auth(['admin', 'manager']), async (req, res) 
 });
 
 
-// NEW ROUTE: GET PRODUCT PERFORMANCE BY TYPE
+// GET PRODUCT PERFORMANCE BY TYPE
 router.route('/report/by-product-type').get(auth(['admin', 'manager']), async (req, res) => {
     const { startDate, endDate } = req.query;
 
@@ -297,25 +297,25 @@ router.route('/report/by-product-type').get(auth(['admin', 'manager']), async (r
     try {
         const productTypePerformance = await Sale.aggregate([
             { $match: matchQuery },
-            { $unwind: "$saleItems" }, // Deconstruct saleItems array
+            { $unwind: "$saleItems" },
             {
-                $lookup: { // Join with products collection to get product type
-                    from: "products", // The collection name (MongoDB typically pluralizes model names)
+                $lookup: {
+                    from: "products",
                     localField: "saleItems.productId",
                     foreignField: "_id",
                     as: "productDetails"
                 }
             },
-            { $unwind: "$productDetails" }, // Deconstruct productDetails array
+            { $unwind: "$productDetails" },
             {
                 $group: {
-                    _id: "$productDetails.type", // Group by product type
+                    _id: "$productDetails.type",
                     totalSales: { $sum: "$saleItems.subtotal" },
                     totalProfit: { $sum: "$saleItems.profitPerItem" },
                     totalQuantitySoldKg: { $sum: { $add: [{ $multiply: ['$saleItems.quantitySoldBags', BAG_SIZE_KG] }, '$saleItems.quantitySoldLooseKg'] } }
                 }
             },
-            { $sort: { "totalSales": -1 } } // Sort by total sales
+            { $sort: { "totalSales": -1 } }
         ]);
 
         res.json(productTypePerformance);
@@ -325,6 +325,41 @@ router.route('/report/by-product-type').get(auth(['admin', 'manager']), async (r
     }
 });
 
+// NEW ROUTE: GET PRODUCT PROFITABILITY SUMMARY
+router.route('/report/product-profit-summary').get(auth(['admin', 'manager']), async (req, res) => {
+    const { startDate, endDate } = req.query;
+
+    let matchQuery = {};
+    if (startDate && endDate) {
+        const start = new Date(startDate);
+        start.setUTCHours(0, 0, 0, 0);
+        const end = new Date(endDate);
+        end.setUTCHours(23, 59, 59, 999);
+        matchQuery.createdAt = { $gte: start, $lte: end };
+    }
+
+    try {
+        const productProfitSummary = await Sale.aggregate([
+            { $match: matchQuery },
+            { $unwind: "$saleItems" }, // Deconstruct saleItems array
+            {
+                $group: {
+                    _id: "$saleItems.productId", // Group by product ID
+                    productName: { $first: "$saleItems.productName" }, // Get product name
+                    totalSalesRevenue: { $sum: "$saleItems.subtotal" }, // Total sales for this product
+                    totalProfitGenerated: { $sum: "$saleItems.profitPerItem" }, // Total profit for this product
+                    totalQuantitySoldKg: { $sum: { $add: [{ $multiply: ['$saleItems.quantitySoldBags', BAG_SIZE_KG] }, '$saleItems.quantitySoldLooseKg'] } } // Total kg sold
+                }
+            },
+            { $sort: { "totalProfitGenerated": -1 } } // Sort by total profit generated
+        ]);
+
+        res.json(productProfitSummary);
+    } catch (err) {
+        console.error('Error fetching product profitability summary:', err);
+        res.status(500).json('Server Error: ' + err.message);
+    }
+});
 
 // CLEAR ALL SALES
 router.route('/clear-all').delete(auth('admin'), async (req, res) => {
