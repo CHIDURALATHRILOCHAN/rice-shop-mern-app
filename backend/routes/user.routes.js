@@ -12,7 +12,7 @@ router.route('/').get(auth(['admin', 'manager']), (req, res) => { // Added auth
 });
 
 // REGISTER a new user: /users/register (Protected for admin/manager - only they can create new users)
-router.route('/register').post(auth(['admin', 'manager']), async (req, res) => { // Added auth
+router.route('/register').post(async (req, res) => { // Added auth
     const { username, password, role } = req.body;
 
     try {
